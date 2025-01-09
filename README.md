@@ -1,122 +1,115 @@
-ShoeFly Data Analysis with Pandas
+Calculating Column Statistics
 
 Overview
 
-This project demonstrates various techniques for data aggregation and analysis using Pandas. It provides insights into analyzing sales data, inventory data, and shipment data for the fictional company ShoeFly.com. The examples include tasks like calculating statistics, identifying trends, and cleaning up data using groupby, apply, and other Pandas methods.
+This project demonstrates how to use Pandas for analyzing and calculating statistics from datasets. It explores concepts such as aggregating, grouping, and summarizing data using Pandas DataFrames. The examples include real-world scenarios like analyzing user activity, inventory management, and pricing information from ShoeFly.com.
 
-Features and Analysis Steps
+Features
 
-1. Aggregating Data
+Key Concepts Covered:
 
-	•	Group data by columns: Analyze trends by grouping data based on attributes like month, utm_source, or shoe_type.
-	•	Example:
+	1.	Loading and Inspecting Data
+	•	Load data using pandas.read_csv().
+	•	Examine the first 10 rows of a DataFrame with .head().
+	2.	Grouping and Aggregating Data
+	•	Use groupby() to calculate counts, sums, and averages grouped by one or more columns.
+	•	Example: Count users visiting a website by month and traffic source.
+	3.	Data Reshaping with Pivot Tables
+	•	Convert grouped data into a pivot table using .pivot() for better readability.
+	4.	Finding Maximum and Unique Values
+	•	Identify the most expensive item in a dataset with .max().
+	•	Count unique values in a column using .nunique().
+	5.	Advanced Grouping
+	•	Group by multiple columns for multi-dimensional analysis.
+	•	Example: Calculate average sales by location and day of the week.
+	6.	Using Lambda Functions
+	•	Apply custom calculations like percentiles within groups using .apply() and lambda functions.
+	7.	Cleaning Grouped Data
+	•	Reset indices of grouped data to convert back to a standard DataFrame using .reset_index().
+
+Example Use Cases
+
+1. Website Analytics
+
+Analyze user traffic across different months and sources:
 
 df.groupby(['month', 'utm_source']).id.count().reset_index()
 
+2. Inventory Management
 
-	•	Pivot tables: Reorganize grouped data for easier readability and analysis.
+List product types and their quantities, and calculate the total inventory value:
 
-df.groupby(['month', 'utm_source']).id.count()\
-    .reset_index()\
-    .pivot(columns='month', index='utm_source', values='id')
+data['total_value'] = data['price'] * data['quantity']
 
-2. Calculating Column Statistics
+3. Most Expensive Shoes
 
-Aggregate functions like .max(), .nunique(), and custom functions are used to extract valuable insights:
-	•	Most expensive shoes:
-
-most_expensive = orders.price.max()
-
-
-	•	Number of unique colors of shoes:
-
-num_colors = orders.shoe_color.nunique()
-
-
-	•	Find the most expensive shoe by type:
-
-pricey_shoes = orders.groupby('shoe_type').price.max()
-
-3. Cleaning Grouped Data
-
-After grouping, use reset_index() to convert grouped Series into DataFrames for cleaner results.
-	•	Example:
+Identify the most expensive shoe for each shoe type:
 
 pricey_shoes = orders.groupby('shoe_type').price.max().reset_index()
 
-4. Custom Aggregations with apply and lambda
+4. Percentile Analysis
 
-For complex operations like calculating percentiles, the apply method is used with lambda functions:
-	•	Find 25th percentile for shoe prices by color:
+Calculate the 25th percentile for shoe prices by color:
 
 cheap_shoes = orders.groupby('shoe_color').price.apply(lambda x: np.percentile(x, 25)).reset_index()
 
-5. Grouping by Multiple Columns
+5. Pivoting for Multi-Dimensional Analysis
 
-Analyze trends involving multiple groupings, such as store and day_of_week, to identify patterns across various dimensions:
-	•	Example:
+Create pivot tables to summarize grouped data:
 
-df.groupby(['store', 'day_of_week']).sales.mean().reset_index()
+shoe_counts_pivot = shoe_counts.pivot(
+  columns='shoe_color',
+  index='shoe_type',
+  values='id'
+).reset_index()
 
-Data Sources
+Example Dataset Descriptions
 
-Files Used:
+	1.	shoeFly.csv
+	•	Contains user visit data from an e-commerce website.
+	•	Columns: utm_source, month, id.
+	2.	orders.csv
+	•	Includes product orders with pricing and color information.
+	•	Columns: shoe_type, shoe_color, price.
 
-	•	inventory.csv: Data about inventory across various store locations.
-	•	orders.csv: Data about customer orders, including shoe types, colors, and prices.
-	•	shipments.csv: Shipment address information and details.
+Installation and Usage
 
-Key Outputs
+Prerequisites
 
-	1.	Statistical Insights:
-	•	Total sales by source and month.
-	•	Most expensive and cheapest items.
-	•	Shoe colors available for sale.
-	2.	Data Cleaning:
-	•	Converted grouped Series into DataFrames for easier processing.
-	•	Filtered and cleaned data using conditionals and aggregations.
-	3.	Custom Calculations:
-	•	Identified 25th percentile of prices for each shoe color.
-	•	Calculated the number of unique shipments by state.
+Ensure you have Python installed with the following libraries:
+	•	pandas
+	•	numpy
 
-How to Use
+Running the Code
 
-	1.	Clone the repository and ensure the necessary files (e.g., inventory.csv, orders.csv) are present in the working directory.
+	1.	Clone this repository:
+
+git clone https://github.com/your_username/column-statistics.git
+cd column-statistics
+
+
 	2.	Install dependencies:
 
 pip install pandas numpy
 
 
-	3.	Run the Python scripts to explore the data and perform the analyses:
+	3.	Run the Python scripts:
 
-python analysis_script.py
+python analyze_data.py
 
-Requirements
+Folder Structure
 
-	•	Python 3.8+
-	•	Pandas
-	•	NumPy
+.
+├── analyze_data.py   # Main script for data analysis
+├── shoeFly.csv       # User visit data
+├── orders.csv        # Product orders data
+└── README.md         # Project documentation
 
-Example Code Snippets
+Key Learnings
 
-# Load data and examine
-import pandas as pd
+This project demonstrates:
+	•	Efficient data manipulation with Pandas.
+	•	Generating insights from real-world datasets.
+	•	Using advanced features like pivot tables and lambda functions for custom analysis.
 
-df = pd.read_csv('shoeFly.csv')
-print(df.head(10))
-
-# Calculate the most expensive shoes
-most_expensive = df['price'].max()
-print(f"Most expensive shoe price: {most_expensive}")
-
-# Find cheap shoes (25th percentile)
-import numpy as np
-
-cheap_shoes = df.groupby('shoe_color').price.apply(lambda x: np.percentile(x, 25)).reset_index()
-print(cheap_shoes)
-
-Future Enhancements
-
-	•	Add visualization tools like Matplotlib or Seaborn for better data representation.
-	•	Automate reporting with a dashboard.
-	•	Enhance data preprocessing for missing or invalid data.
+Feel free to contribute, suggest improvements, or fork this repository!
